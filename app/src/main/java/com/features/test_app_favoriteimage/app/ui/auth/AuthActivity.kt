@@ -2,38 +2,65 @@ package com.features.test_app_favoriteimage.app.ui.auth
 
 import android.animation.AnimatorSet
 import android.animation.ValueAnimator
-import androidx.appcompat.app.AppCompatActivity
+import android.content.Intent
 import android.os.Bundle
 import android.view.View
 import android.view.ViewTreeObserver
 import android.view.animation.AccelerateDecelerateInterpolator
 import android.widget.RelativeLayout
+import android.widget.Toast
 import androidx.core.animation.doOnEnd
 import androidx.core.animation.doOnStart
+import androidx.lifecycle.Observer
+import androidx.lifecycle.ViewModelProvider
 import com.features.test_app_favoriteimage.R
-import com.features.test_app_favoriteimage.app.safeLet
+import com.features.test_app_favoriteimage.app.ui.common.BaseActivity
+import com.features.test_app_favoriteimage.app.ui.common.safeLet
+import com.features.test_app_favoriteimage.app.ui.main.MainActivity
 import kotlinx.android.synthetic.main.activity_auth.*
+import javax.inject.Inject
 
-class AuthActivity : AppCompatActivity() {
+class AuthActivity : BaseActivity() {
+
+    @Inject
+    lateinit var factory: AuthViewModelFactory
+    private lateinit var viewModel: AuthViewModel
+    private lateinit var adapter: AuthViewPagerAdapter
 
     private val ANIMATION_TIME: Long = 200L
     private var isMoving: Boolean = false
     private var screenType = ScreenType.SCREEN_LOG_IN
-    private var viewWidth: Int = 0
-
-    private lateinit var adapter: AuthViewPagerAdapter
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_auth)
 
+        appComponent.inject(this)
+        this.viewModel = ViewModelProvider(viewModelStore, this.factory).get(AuthViewModel::class.java)
+
         initButton()
 
         this.adapter = AuthViewPagerAdapter(object : AuthViewPagerAdapter.AuthListener {
-            override fun onAuthPressed(type: ScreenType?, email: String?, pass: String?) {
-                // TODO
+            override fun onLoginPressed(email: String?, pass: String?) {
+                viewModel.login(email, pass)
+            }
+
+            override fun onSignupPressed(phone: String?, email: String?, pass: String?) {
+                viewModel.signup(phone, email, pass)
             }
         })
+        this.viewModel.apply {
+            error.observe(this@AuthActivity, Observer<String> { error ->
+                showToast(error)
+            })
+            successfulLogIn.observe(this@AuthActivity, Observer<Boolean> {
+                startMainActivity()
+            })
+            successfulSignUp.observe(this@AuthActivity, Observer<Boolean> {
+                startMainActivity()
+            })
+        }
+
         auth_view_pager.adapter = adapter
         auth_view_pager.isUserInputEnabled = false
         auth_view_pager.currentItem = ScreenType.SCREEN_LOG_IN.value
@@ -48,6 +75,11 @@ class AuthActivity : AppCompatActivity() {
             }
         }
 
+    }
+
+    private fun startMainActivity() {
+        startActivity(Intent(this@AuthActivity, MainActivity::class.java))
+        finish()
     }
 
     private fun initButton() {
@@ -84,7 +116,6 @@ class AuthActivity : AppCompatActivity() {
                 screenType = ScreenType.SCREEN_SIGN_UP
             })
 
-
         }
     }
 
@@ -103,6 +134,10 @@ class AuthActivity : AppCompatActivity() {
 
 
         }
+    }
+
+    private fun showToast(error: String) {
+        Toast.makeText(this, error, Toast.LENGTH_LONG).show()
     }
 
     private fun animateSignButton(view: View,
@@ -128,6 +163,7 @@ class AuthActivity : AppCompatActivity() {
         animatorSet.doOnEnd { endAction.invoke() }
         animatorSet.start()
     }
+
 
 
 }

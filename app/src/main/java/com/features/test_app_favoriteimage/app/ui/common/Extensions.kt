@@ -1,4 +1,4 @@
-package com.features.test_app_favoriteimage.app
+package com.features.test_app_favoriteimage.app.ui.common
 
 // Safe Let
 

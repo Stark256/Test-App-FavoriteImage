@@ -1,13 +1,19 @@
 <resources>
-    <string name="app_name">FavoriteImage</string>
+    <string name="base_url">https://app.zenserp.com</string>
+    <string name="api_key">08b1cbd0-0f1a-11eb-b49b-7b0001cb801d</string>
 
+    <string name="db_name">favourite_images_db.db</string>
+
+    <string name="app_name">FavoriteImage</string>
 
     <string name="sign_up">Sign Up</string>
     <string name="log_in">Log In</string>
+    <string name="log_out">Log Out</string>
 
     <string name="log_in_message">Login to your Account</string>
     <string name="sign_up_message">Create your Account</string>
 
     <string name="hint_email">Email</string>
     <string name="hint_password">Password</string>
+    <string name="hint_phone">Phone</string>
 </resources>
