@@ -1,0 +1,13 @@
+<resources>
+    <string name="app_name">FavoriteImage</string>
+
+
+    <string name="sign_up">Sign Up</string>
+    <string name="log_in">Log In</string>
+
+    <string name="log_in_message">Login to your Account</string>
+    <string name="sign_up_message">Create your Account</string>
+
+    <string name="hint_email">Email</string>
+    <string name="hint_password">Password</string>
+</resources>
